@@ -28,14 +28,14 @@ This advanced course will concentrate on current server based virtualization sol
 ## CLOs
 
 Upon completion of the course, students will be able to:
-Hypervisor installation 
-Virtual networking 
-Network Storage Integration (NFS, ISCSI) 
-Clustering and Failover 
-Virtualization API's and automation of deployment 
-Integration of Server virtualization platforms with Microsoft Active Directory. 
+- Hypervisor installation 
+- Virtual networking 
+- Network Storage Integration (NFS, ISCSI) 
+- Clustering and Failover 
+- Virtualization API's and automation of deployment 
+- Integration of Server virtualization platforms with Microsoft Active Directory. 
 
 ## Course Outcomes
-Deploy and Manage Enterprise Hypervisor systems 
-Provide users with single sign-on access to systems and applications located across organizational 
+- Deploy and Manage Enterprise Hypervisor systems 
+= Provide users with single sign-on access to systems and applications located across organizational 
 
