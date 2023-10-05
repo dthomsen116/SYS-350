@@ -2,6 +2,8 @@
 import getpass, warnings, ssl
 from pyVim.connect import SmartConnect
 from pyVmomi import vim
+
+#Mute the Deprecation warning
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Define a class for vCenter connection
@@ -40,11 +42,11 @@ class VCenterConnection:
     # Function to display session information
     def sessionInfo(self):
         p = self.si.content.sessionManager.currentSession
-        print("\nSession Info\n")
+        print("\nSession Info")
         print("-----------------------------------------------------------------")
         print("Session Key: " + p.key)
         print("Session User Agent: " + p.userAgent)
-        print("Session User/Domain: " + p.userName)
+        print("Session Domain/Username: " + p.userName)
         print("Session Server: " + self.si.content.about.name)
 
     # Function to retrieve and display VM information
@@ -60,11 +62,12 @@ class VCenterConnection:
         for vm in vmlist:
             if vm.name != "%2fvmfs%2fvolumes%2f64f20cb8-49d66acc-314c-3cecef4663da%2fpfsense%2fpfsense.vmx":
                 if search in vm.name:
+                    print()
                     print("Name: " + vm.name)
                     print("Power State: " + vm.runtime.powerState)
                     print("Number of CPUs: " + str(vm.config.hardware.numCPU))
                     print("Memory in GB: " + str(vm.config.hardware.memoryMB / 1024))
-                    print()
+                    
                     
                     # Retrieve and display VM's IP address
                     ip_address = None
@@ -99,7 +102,7 @@ class VCenterConnection:
                 print("Goodbye!")
                 if self.si is not None:
                     # Terminate the current session when exiting
-                    self.si.content.sessionManager.TerminateSession(self.si.content.sessionManager.currentSession.key)
+                    exit
                 break
             else:
                 print("Invalid choice. Please enter a valid option (1-7).")
