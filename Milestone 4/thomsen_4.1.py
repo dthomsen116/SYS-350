@@ -84,12 +84,192 @@ class VCenterConnection:
                     else:
                         continue
 
+    # Function to alter the Power State
+    def powerChange(self):
+        search = input("Search for a VM: ")
+        print()
+
+        for child in self.si.content.rootFolder.childEntity:
+            dc = child
+            vmfolder = dc.vmFolder
+            vmlist = vmfolder.childEntity
+
+        for vm in vmlist:
+            if vm.name != "%2fvmfs%2fvolumes%2f64f20cb8-49d66acc-314c-3cecef4663da%2fpfsense%2fpfsense.vmx":
+                if search in vm.name:
+                    print("Name: " + vm.name)
+                    print("Power State: " + vm.runtime.powerState + "\n")
+                    print("1. Yes")
+                    print("2. No")
+                    print("3. Menu\n")
+                    choice = input("\nDo you want to edit the power state?:")
+                    print()
+                    if choice in ('1', 'y', 'Y'):
+                        print("1. On")
+                        print("2. Off")
+                        choice2 = input("\nPower on or off?: ")
+
+                        if choice2 == '1':
+                            try:
+                                if vm.runtime.powerState == vim.VirtualMachinePowerState.poweredOff:
+                                    vm.PowerOn()
+                                    print("VM powered on successfully.")
+                                else:
+                                    print("The VM is already powered on.")
+                            except Exception as e:
+                                print("Error occurred while powering on the VM:", str(e))
+                        elif choice2 == '2':
+                            try:
+                                vm.PowerOff()
+                            except Exception:
+                                print("Error occurred...")
+                        else:
+                            print("Invalid choice. Returning to the menu...")
+
+                    elif choice in ('2', 'n', 'N'):
+                        print("Returning to the menu...\n")
+                    else:
+                        print("Invalid choice. Returning to the menu...")
+                    if choice in ('3', 'exit'):
+                        print("Returning to menu...")
+                        continue
+
+    # Function to take and revert snapshots
+    def snapshotVM(self):
+        search = input("\nSearch for a VM: ")
+        print()
+
+        for child in self.si.content.rootFolder.childEntity:
+            dc = child
+            vmfolder = dc.vmFolder
+            vmlist = vmfolder.childEntity
+
+        for vm in vmlist:
+            if vm.name != "%2fvmfs%2fvolumes%2f64f20cb8-49d66acc-314c-3cecef4663da%2fpfsense%2fpfsense.vmx":
+                if search in vm.name:
+                    print("Name: " + vm.name + "\n")
+                    print("1. Yes")
+                    print("2. No\n")
+                    choice = input("\nDo you want to work with this VM?: ")
+                    print()
+                    
+                    if choice in ('1', 'y', 'Y'):
+                        print("1. Take a Snapshot")
+                        print("2. Revert to Last Snapshot")
+                        print("3. Back to Menu")
+                        choice2 = input("\nSelect an action (1/2/3): ")
+
+                        if choice2 == '1':
+                            try:
+                                snapshot_name = input("Enter Snapshot Name: ")
+                                description = input("Enter Snapshot Description: ")
+                                vm.CreateSnapshot(snapshot_name, description, memory=False, quiesce=False)
+                                print("Snapshot created successfully.")
+                            except Exception as e:
+                                print("Error occurred while taking a snapshot:", str(e))
+                        
+                        elif choice2 == '2':
+                            try:
+                                snapshots = vm.snapshot.rootSnapshotList
+                                if snapshots:
+                                    latest_snapshot = snapshots[0]
+                                    latest_snapshot.snapshot.RevertToSnapshot_Task()
+                                    
+                                    print("Reverted to the latest snapshot successfully.")
+                                else:
+                                    print("No snapshots found for this VM.")
+                            except Exception as e:
+                                print("Error occurred while reverting to the latest snapshot:", str(e))
+                        
+                        elif choice2 == '3':
+                            print("Returning to the menu...")
+                        
+                        else:
+                            print("Invalid choice. Returning to the menu...")
+
+                    elif choice in ('2', 'n', 'N'):
+                        print("Returning to the menu...\n")
+                    
+                    else:
+                        print("Invalid choice. Returning to the menu...")
+
+    # Function to create a full clone of a VM
+    def fullClone(self):
+        search = input("Search for a VM: ")
+        print()
+
+        for child in self.si.content.rootFolder.childEntity:
+            dc = child
+            vmfolder = dc.vmFolder
+            vmlist = vmfolder.childEntity
+
+        for vm in vmlist:
+            if vm.name != "%2fvmfs%2fvolumes%2f64f20cb8-49d66acc-314c-3cecef4663da%2fpfsense%2fpfsense.vmx":
+                if search in vm.name:
+                    print("Name: " + vm.name)
+                    clone_name = input("Enter a name for the clone: ")
+
+                    try:
+                        # Create a clone specification
+                        clone_spec = vim.vm.CloneSpec()
+                        clone_spec.location = vim.vm.RelocateSpec()
+                        clone_spec.powerOn = False  
+
+                        # Clone the VM
+                        vm.Clone(folder=vmfolder, name=clone_name, spec=clone_spec)
+                        print("Clone creation initiated successfully.")
+                        print("Check vCenter for the status of the clone operation.")
+
+                    except Exception as e:
+                        print("Error occurred while cloning the VM:", str(e))
+                        continue
+
+    # Function to delete a VM
+    def deleteVM(self):
+        search = input("Search for a VM: ")
+        print()
+
+        for child in self.si.content.rootFolder.childEntity:
+            dc = child
+            vmfolder = dc.vmFolder
+            vmlist = vmfolder.childEntity
+
+        for vm in vmlist:
+            if vm.name != "%2fvmfs%2fvolumes%2f64f20cb8-49d66acc-314c-3cecef4663da%2fpfsense%2fpfsense.vmx":
+                if search in vm.name:
+                    print("Name: " + vm.name +'\n')
+
+                    print("1. Yes\n")
+                    print("1. No\n")
+                    choich = input("Is this the VM you would like to delete? (1/2): ")
+                    if vm.runtime.powerState == 'poweredOn':
+                        print(f"VM "+ vm.name + " is powered on. Please power off the VM before deleting")
+                        break
+                    else:
+                        if choich == '1':        
+                            try:
+                                check = input('\n Are you sure: Please print "' + vm.name + '": ')
+                                if check == vm.name:
+                                    vm.Destroy()
+                                    print("\n VM has been Destoyed")
+
+                            except Exception as e:
+                                print("Error occurred while cloning the VM:", str(e))
+                                continue                    
+                        else: 
+                            print("Returning to menu")
+                            continue
+
     # Function to display the main menu
     def display_menu(self):
         while True:
             print("\nMenu:")
             print("1. Display Session Info")
             print("2. Search for VMs")
+            print("3. Edit Power State")
+            print("4. Take/Revert Snapshot")
+            print("5. Clone VM")
+            print("6. Delete VM")
             print("7. Exit")
             
             choice = input("Enter your choice (1-7): ")
@@ -98,6 +278,14 @@ class VCenterConnection:
                 self.sessionInfo()
             elif choice == '2':
                 self.vmInfo()
+            elif choice == '3':
+                self.powerChange()
+            elif choice == '4':
+                self.snapshotVM()
+            elif choice == '5':
+                self.fullClone()
+            elif choice == '6':
+                self.deleteVM()
             elif choice == '7':
                 print("Goodbye!")
                 if self.si is not None:
@@ -106,6 +294,7 @@ class VCenterConnection:
                 break
             else:
                 print("Invalid choice. Please enter a valid option (1-7).")
+
 
 # Entry point of the script
 if __name__ == "__main__":
