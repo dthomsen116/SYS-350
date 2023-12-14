@@ -82,16 +82,15 @@ function linkedClone {
 function deleteVM{
     $vmName = read-host "Enter VM name to delete: "
     $vm = Get-VM $vmName
-    if $vm.state -eq "Running" {
-        $ans = write-host "VM is running, would you like to stop the VM? (y/n)"
-        if $ans -eq "y" {
+    if ($vm.state -eq "Running") {
+        $ans = read-host "VM is running, would you like to stop the VM? (y/n)"
+        if ($ans -eq "y") {
             Stop-VM $vmName -Force
         }
         else{
             write-host "VM will not be deleted"
             return
         }
-        Stop-VM $vmName -Force
     }
 
     $confirm = read-host "Are you sure you want to delete $vmName? (y/n)"
