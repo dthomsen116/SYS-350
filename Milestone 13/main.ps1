@@ -61,7 +61,7 @@ function revertSnapshot{
 function linkedClone {
     $originalVM = read-host "Enter VM name to clone: "
     $cloneName = read-host "Enter clone name: "
-    
+
     $Path = "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\"
     $originalVHD = $Path + $originalVM + ".vhdx"
     $cloneVHD = $Path + $cloneName + ".vhdx"
@@ -82,6 +82,18 @@ function linkedClone {
 function deleteVM{
     $vmName = read-host "Enter VM name to delete: "
     $vm = Get-VM $vmName
+    if $vm.state -eq "Running" {
+        $ans = write-host "VM is running, would you like to stop the VM? (y/n)"
+        if $ans -eq "y" {
+            Stop-VM $vmName -Force
+        }
+        else{
+            write-host "VM will not be deleted"
+            return
+        }
+        Stop-VM $vmName -Force
+    }
+
     $confirm = read-host "Are you sure you want to delete $vmName? (y/n)"
     if ($confirm -eq "y") {
         $vm | Remove-VM -Force
