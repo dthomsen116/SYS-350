@@ -59,8 +59,17 @@ function revertSnapshot{
 
 # function to search for a VM and create a Linked Clone
 function linkedClone {
-    
+    $vmName = Read-Host "Enter VM name to create a linked clone: "
+    $vm = Get-VM $vmName
+
+    $cloneName = Read-Host "Enter the name for the linked clone: "
+    $clonePath = "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\$cloneName.vhdx"
+
+    $vm | New-VHD -Path $clonePath -Differencing -ParentPath $vm.HardDrives[0].Path
+
+    Write-Host "Linked clone created successfully at $clonePath"
 }
+
 # function to search for a VM and delete it (with confirmation)
 function deleteVM{
     $vmName = read-host "Enter VM name to delete: "
@@ -80,7 +89,7 @@ function menu{
     Write-Host "4. Power off a VM"
     Write-Host "5. Create a snapshot"
     Write-Host "6. Revert to a snapshot"
-    Write-Host "7. Create a full clone"
+    Write-Host "7. Create a linked clone"
     Write-Host "8. Delete a VM"
     Write-Host "9. Exit"
     $choice = Read-Host "Enter your choice"
