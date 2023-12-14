@@ -13,8 +13,7 @@ function allVmInfo {
     }
 }
 
-# function to gather specific VM information with a search for VM name
-
+# function to gather specific VM information with a parameter for VM name
 function specificVMInfo {
     param (
         [Parameter(Mandatory=$true)]
@@ -33,4 +32,24 @@ function specificVMInfo {
     }
 }
 
-specificVMInfo -VMName "TempleOS"
+function menu{
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$VMName
+    )
+
+    # Menu to choose which function to run
+    Write-Host "1. Get all VMs"
+    Write-Host "2. Get specific VM"
+    Write-Host "3. Exit"
+    $choice = Read-Host "Enter your choice"
+    switch ($choice) {
+        1 {allVmInfo}
+        2 {specificVMInfo $VMName}
+        3 {exit}
+    }
+}
+
+while ($true) {
+    menu
+}
