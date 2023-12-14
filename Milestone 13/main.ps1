@@ -1,5 +1,5 @@
 
-function Get-HyperVVMInfo {
+function allVmInfo {
     # Get all VMs on the local Hyper-V server
     Get-VM | Select-Object -Property Name, State, 
     
@@ -9,4 +9,8 @@ function Get-HyperVVMInfo {
     @{Name='MemoryAssignedMB'; Expression={$_.MemoryAssigned / 1MB}},
     Uptime, 
     Status
+    
+    write-host "---------------------------------"
 }
+
+allVmInfo
