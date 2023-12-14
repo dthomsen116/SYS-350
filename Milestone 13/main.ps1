@@ -62,11 +62,14 @@ function revertSnapshot{
 
 # function to search for a VM and create a Full Clone
 function fullClone{
-    $vmName = read-host "Enter VM name to create a full clone: "
+    $vmName = Read-Host "Enter VM name to create a full clone: "
     $vm = Get-VM $vmName
-    $cloneName = read-host "Enter clone name: "
-    $vm | New-VM -Name $cloneName -Path "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks" -Copy
+    $cloneName = Read-Host "Enter clone name: "
+    $exportPath = "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\$cloneName"
+    Export-VM -Name $vmName -Path $exportPath -Copy
+    Import-VM -Path $exportPath -Copy -GenerateNewId
 }
+
 
 # function to search for a VM and delete it (with confirmation)
 function deleteVM{
