@@ -60,7 +60,7 @@ function menu{
     Write-Host "3. Power on a VM"
     Write-Host "4. Power off a VM"
     Write-Host "5. Create a snapshot"
-    Write-Host "(9 or exit). Exit"
+    Write-Host "9. Exit"
     $choice = Read-Host "Enter your choice"
     switch ($choice) {
         1 {
@@ -75,9 +75,9 @@ function menu{
         5 {
             createSnapshot}
         
-        9 or "exit" or "Exit" {
+        9 {
             exit}
-    }
+`    }
 }
 
 while ($true) {
