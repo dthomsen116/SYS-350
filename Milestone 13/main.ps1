@@ -58,11 +58,10 @@ function revertSnapshot{
 }
 
 # function to search for a VM and create a Linked Clone
-function New-LinkedClone {
-    param (
-        [string]$originalVM,
-        [string]$cloneName
-    )
+function linkedClone {
+    $originalVM = read-host "Enter VM name to clone: "
+    $cloneName = read-host "Enter clone name: "
+    
     $Path = "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\"
     $originalVHD = $Path + $originalVM + ".vhdx"
     $cloneVHD = $Path + $cloneName + ".vhdx"
