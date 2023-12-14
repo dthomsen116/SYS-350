@@ -15,10 +15,7 @@ function allVmInfo {
 
 # function to gather specific VM information with a parameter for VM name
 function specificVMInfo {
-    param (
-        [Parameter(Mandatory=$true)]
-        [string]$VMName
-    )
+    $vmName = read-host "Enter VM name to search for: "
 
     # Get specific VM information with a search for VM name
     Get-VM -Name $VMName | ForEach-Object {
@@ -35,13 +32,13 @@ function specificVMInfo {
 # functions to power on and off a VM with a parameter for VM name
 function powerOn{
     $vmName = read-host "Enter VM name to power on: "
-    Get-VM $vmName | start-vm
+    Get-VM $vmName | Start-VM
 }
 
 # functions to power on and off a VM with a parameter for VM name
 function powerOff{
     $vmName = read-host "Enter VM name to power off: "
-    Get-VM $vmName | stop-vm
+    Get-VM $vmName | Stop-VM
 }
 
 # function to search for a VM and create a new Snapshot
@@ -61,15 +58,9 @@ function revertSnapshot{
 }
 
 # function to search for a VM and create a Linked Clone
-function linkedClone{
-    $vmName = read-host "Enter VM name to create a linked clone: "
-    $vm = Get-VM $vmName
-    $cloneName = read-host "Enter clone name: "
-    $vm | New-VM -Name $cloneName -Path "C:\VMs" -Generation 2 -MemoryStartupBytes 1GB -NewVHDPath "C:\VMs\$cloneName\$cloneName.vhdx" -NewVHDSizeBytes 20GB -SwitchName "External Switch"
+function linkedClone {
+    
 }
-
-
-
 # function to search for a VM and delete it (with confirmation)
 function deleteVM{
     $vmName = read-host "Enter VM name to delete: "
@@ -89,31 +80,21 @@ function menu{
     Write-Host "4. Power off a VM"
     Write-Host "5. Create a snapshot"
     Write-Host "6. Revert to a snapshot"
-    Write-Host "7. Create a linked clone"
+    Write-Host "7. Create a full clone"
     Write-Host "8. Delete a VM"
     Write-Host "9. Exit"
     $choice = Read-Host "Enter your choice"
     switch ($choice) {
-        1 {
-            allVmInfo}
-        2 {
-            $VMName = Read-Host "Enter VM name: "
-            specificVMInfo $VMName}
-        3 {
-            powerOn}
-        4 {
-            powerOff}
-        5 {
-            createSnapshot}
-        6 {
-            revertSnapshot}     
-        7 {
-            linkedClone}
-        8 {
-            deleteVM}   
-        9 {
-            exit}
-`    }
+        1 {allVmInfo}
+        2 {specificVMInfo}
+        3 {powerOn}
+        4 {powerOff}
+        5 {createSnapshot}
+        6 {revertSnapshot}
+        7 {linkedClone}
+        8 {deleteVM}
+        9 {exit}
+    }
 }
 
 while ($true) {
