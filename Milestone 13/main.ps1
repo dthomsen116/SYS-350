@@ -58,16 +58,25 @@ function revertSnapshot{
 }
 
 # function to search for a VM and create a Linked Clone
-function linkedClone {
-    $vmName = Read-Host "Enter VM name to create a linked clone: "
-    $vm = Get-VM $vmName
+function New-LinkedClone {
+    param (
+        [string]$originalVM,
+        [string]$cloneName
+    )
+    $Path = "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\"
+    $originalVHD = $Path + $originalVM + ".vhdx"
+    $cloneVHD = $Path + $cloneName + ".vhdx"
+    New-VHD -ParentPath $originalVHD -Path $cloneVHD -Differencing
 
-    $cloneName = Read-Host "Enter the name for the linked clone: "
-    $clonePath = "C:\Users\Public\Documents\Hyper-V\Virtual hard disks\$cloneName.vhdx"
+    New-VM -Name $cloneName -MemoryStartupBytes 1GB -VHDPath $cloneVHD -Generation 2 -SwitchName "LAN-INTERNAL"
+    Set-VMFirmware -VMName $cloneName -EnableSecureBoot Off
+    Checkpoint-VM -Name $cloneName -SnapshotName "Base"
 
-    $vm | New-VHD -Path $clonePath -Differencing -ParentPath $vm.HardDrives[0].Path
-
-    Write-Host "Linked clone created successfully at $clonePath"
+    Write-Host "Would you like to turn on the VM? (Y/N): "
+    $choice = Read-Host
+    if ($choice -eq "Y") {
+        Start-VM -Name $cloneName
+    }
 }
 
 # function to search for a VM and delete it (with confirmation)
