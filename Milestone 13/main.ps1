@@ -60,14 +60,12 @@ function revertSnapshot{
     $vm | Restore-VMSnapshot -Name $snapName
 }
 
-# function to search for a VM and create a Full Clone
-function fullClone{
-    $vmName = Read-Host "Enter VM name to create a full clone: "
+# function to search for a VM and create a Linked Clone
+function linkedClone{
+    $vmName = read-host "Enter VM name to create a linked clone: "
     $vm = Get-VM $vmName
-    $cloneName = Read-Host "Enter clone name: "
-    $exportPath = "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\$cloneName"
-    Export-VM -Name $vmName -Path $exportPath
-    Import-VM -Path $exportPath -GenerateNewId
+    $cloneName = read-host "Enter clone name: "
+    $vm | New-VM -Name $cloneName -Path "C:\VMs" -Generation 2 -MemoryStartupBytes 1GB -NewVHDPath "C:\VMs\$cloneName\$cloneName.vhdx" -NewVHDSizeBytes 20GB -SwitchName "External Switch"
 }
 
 
