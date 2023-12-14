@@ -89,7 +89,7 @@ function menu{
     Write-Host "4. Power off a VM"
     Write-Host "5. Create a snapshot"
     Write-Host "6. Revert to a snapshot"
-    Write-Host "7. Create a full clone"
+    Write-Host "7. Create a linked clone"
     Write-Host "8. Delete a VM"
     Write-Host "9. Exit"
     $choice = Read-Host "Enter your choice"
@@ -108,7 +108,7 @@ function menu{
         6 {
             revertSnapshot}     
         7 {
-            fullClone}
+            linkedClone}
         8 {
             deleteVM}   
         9 {
