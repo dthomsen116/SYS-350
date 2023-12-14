@@ -66,9 +66,10 @@ function fullClone{
     $vm = Get-VM $vmName
     $cloneName = Read-Host "Enter clone name: "
     $exportPath = "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks\$cloneName"
-    Export-VM -Name $vmName -Path $exportPath -Copy
-    Import-VM -Path $exportPath -Copy -GenerateNewId
+    Export-VM -Name $vmName -Path $exportPath
+    Import-VM -Path $exportPath -GenerateNewId
 }
+
 
 
 # function to search for a VM and delete it (with confirmation)
