@@ -9,10 +9,9 @@ function Get-HyperVVMInfo {
         $vmHostname = $vm | Get-VMIntegrationService | Where-Object {$_.Name -eq "Guest Service Interface"} | Select-Object -ExpandProperty PrimaryHostFullyQualifiedDomainName
 
         # Output the VM information
-        [PSCustomObject]@{
-            VMName = $vmName
-            IP = $vmIP
-            Hostname = $vmHostname
-        }
+        write-host "VM Name: $vmName"
+        write-host "VM IP: $vmIP"
+        write-host "VM Hostname: $vmHostname"
+        write-host ""   
     }
 }
