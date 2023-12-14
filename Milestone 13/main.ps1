@@ -32,11 +32,35 @@ function specificVMInfo {
     }
 }
 
+# functions to power on and off a VM with a parameter for VM name
+function powerOn{
+    $vmName = read-host "Enter VM name to power on: "
+    Get-VM $vmName | start-vm
+}
+
+# functions to power on and off a VM with a parameter for VM name
+function powerOff{
+    $vmName = read-host "Enter VM name to power on: "
+    Get-VM $vmName | stop-vm
+}
+
+# function to search for a VM and create a new Snapshot
+function createSnapshot{
+    $vmName = read-host "Enter VM name to create a snapshot: "
+    $vm = Get-VM $vmName
+    $snapName = read-host "Enter snapshot name: "
+    $vm | Checkpoint-VM -SnapshotName $snapName
+}
+
+# function to display a menu to choose which function to run
 function menu{
     # Menu to choose which function to run
     Write-Host "1. Get all VMs"
-    Write-Host "2. Get specific VM"
-    Write-Host "3. Exit"
+    Write-Host "2. Search for a specific VM"
+    Write-Host "3. Power on a VM"
+    Write-Host "4. Power off a VM"
+    Write-Host "5. Create a snapshot"
+    Write-Host "(9 or exit). Exit"
     $choice = Read-Host "Enter your choice"
     switch ($choice) {
         1 {
@@ -45,6 +69,13 @@ function menu{
             $VMName = Read-Host "Enter VM name: "
             specificVMInfo $VMName}
         3 {
+            powerOn}
+        4 {
+            powerOff}
+        5 {
+            createSnapshot}
+        
+        9 or "exit" or "Exit" {
             exit}
     }
 }
