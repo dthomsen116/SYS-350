@@ -40,7 +40,7 @@ function powerOn{
 
 # functions to power on and off a VM with a parameter for VM name
 function powerOff{
-    $vmName = read-host "Enter VM name to power on: "
+    $vmName = read-host "Enter VM name to power off: "
     Get-VM $vmName | stop-vm
 }
 
@@ -52,6 +52,32 @@ function createSnapshot{
     $vm | Checkpoint-VM -SnapshotName $snapName
 }
 
+# function to list and revert to a previous snapshot
+function revertSnapshot{
+    $vmName = read-host "Enter VM name to revert to a snapshot: "
+    $vm = Get-VM $vmName
+    $snapName = read-host "Enter snapshot name: "
+    $vm | Restore-VMSnapshot -Name $snapName
+}
+
+# function to search for a VM and create a Full Clone
+function fullClone{
+    $vmName = read-host "Enter VM name to create a full clone: "
+    $vm = Get-VM $vmName
+    $cloneName = read-host "Enter clone name: "
+    $vm | New-VM -Name $cloneName -Path "C:\Users\Public\Documents\Hyper-V\Virtual Hard Disks" -Copy
+}
+
+# function to search for a VM and delete it (with confirmation)
+function deleteVM{
+    $vmName = read-host "Enter VM name to delete: "
+    $vm = Get-VM $vmName
+    $confirm = read-host "Are you sure you want to delete $vmName? (y/n)"
+    if ($confirm -eq "y") {
+        $vm | Remove-VM -Force
+    }
+}
+
 # function to display a menu to choose which function to run
 function menu{
     # Menu to choose which function to run
@@ -60,6 +86,9 @@ function menu{
     Write-Host "3. Power on a VM"
     Write-Host "4. Power off a VM"
     Write-Host "5. Create a snapshot"
+    Write-Host "6. Revert to a snapshot"
+    Write-Host "7. Create a full clone"
+    Write-Host "8. Delete a VM"
     Write-Host "9. Exit"
     $choice = Read-Host "Enter your choice"
     switch ($choice) {
@@ -74,7 +103,12 @@ function menu{
             powerOff}
         5 {
             createSnapshot}
-        
+        6 {
+            revertSnapshot}     
+        7 {
+            fullClone}
+        8 {
+            deleteVM}   
         9 {
             exit}
 `    }
